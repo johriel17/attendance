@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import "react-datepicker/dist/react-datepicker.css";
-import Spinner from '../../components/Spinner';
+// import Spinner from '../../components/Spinner';
 import BackButton from '../../components/BackButton';
 import ApiClient from '../../components/Api';
 import { useNavigate } from 'react-router-dom';
@@ -9,12 +9,12 @@ const AddEmployee = () => {
   const [firstName, setFirstName] = useState('')
   const [middleName, setMiddleName] = useState('')
   const [lastName, setLastName] = useState('')
-  const [loading, setLoading] = useState(false)
+  // const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState({});
   const navigate = useNavigate()
   const api = ApiClient()
 
-  const handleSaveEmployee = () => {
+  const handleSaveEmployee = async() => {
     const data = {
       employeeNo,
       firstName,
@@ -22,17 +22,12 @@ const AddEmployee = () => {
       lastName,
     }
 
-    setLoading(true)
-
-    api.post('/employees', data)
-    .then(() =>{
-      setLoading(false)
+    try{
+      await api.post('employees', data)
       navigate('/employees')
-    })
-    .catch((error) => {
-      setLoading(false)
+    }catch(error){
       setErrors(error.response.data.errors)
-    })
+    }
 
   }
   
@@ -43,7 +38,7 @@ const AddEmployee = () => {
           <h3 className="text-2xl my-8 font-extrabold">Add New Employee</h3>
       </div>
        
-       {loading && <Spinner/>}
+       {/* {loading && <Spinner/>} */}
           
         <form className="w-full mx-auto py-5">
           <div className="flex flex-wrap">

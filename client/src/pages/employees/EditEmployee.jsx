@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import "react-datepicker/dist/react-datepicker.css";
-import Spinner from '../../components/Spinner';
+// import Spinner from '../../components/Spinner';
 import BackButton from '../../components/BackButton';
 import ApiClient from '../../components/Api';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -9,7 +9,7 @@ const EditEmployee = () => {
   const [firstName, setFirstName] = useState('')
   const [middleName, setMiddleName] = useState('')
   const [lastName, setLastName] = useState('')
-  const [loading, setLoading] = useState(false)
+  // const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState({});
   const navigate = useNavigate()
   const {id} = useParams()
@@ -17,23 +17,23 @@ const EditEmployee = () => {
 
   useEffect(() => {
 
-    setLoading(true)
-    api.get(`/employees/${id}`)
-    .then((res) => {
+    const fetchData = async () => {
+      try{
+        const res = await api.get(`/employees/${id}`)
         setEmployeeNo(res.data.employeeNo)
         setFirstName(res.data.firstName)
         setMiddleName(res.data.middleName)
         setLastName(res.data.lastName)
-        setLoading(false)
-    })
-    .catch((error) => {
+      }catch(error){
         console.log(error)
-        setLoading(false)
-    })
+      }
+      
+    }
 
+    fetchData()
   },[])
 
-  const handleUpdateEmployee = () => {
+  const handleUpdateEmployee = async() => {
     const data = {
       employeeNo,
       firstName,
@@ -41,17 +41,12 @@ const EditEmployee = () => {
       lastName,
     }
 
-    setLoading(true)
-
-    api.put(`/employees/${id}`, data)
-    .then(() =>{
-      setLoading(false)
+    try{
+      await api.put(`/employees/${id}`, data)
       navigate('/employees')
-    })
-    .catch((error) => {
-      setLoading(false)
+    }catch(error){
       setErrors(error.response.data.errors)
-    })
+    }
 
   }
   
@@ -62,7 +57,7 @@ const EditEmployee = () => {
           <h3 className="text-2xl my-8 font-extrabold">Edit Employee</h3>
       </div>
        
-       {loading && <Spinner/>}
+       {/* {loading && <Spinner/>} */}
           
         <form className="w-full mx-auto py-5">
           <div className="flex flex-wrap">

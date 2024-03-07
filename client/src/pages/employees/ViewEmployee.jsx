@@ -13,17 +13,20 @@ const ViewEmployee = () => {
 
   useEffect(() => {
 
-    setLoading(true)
-    api.get(`http://localhost:4000/api/employees/${id}`)
-    .then((response) => {
-      setEmployee(response.data)
-      setLoading(false)
-    })
-    .catch((error) => {
-      setLoading(false)
+    const fetchData = async () => {
+      try{
+        setLoading(true)
+        const res = await api.get(`http://localhost:4000/api/employees/${id}`)
+        setEmployee(res.data)
+        setLoading(false)
+      }catch(error){
+        setLoading(false)
       console.log(error)
-    })
+      }
+    }
 
+    fetchData()
+    
   }, [])
 
   return (

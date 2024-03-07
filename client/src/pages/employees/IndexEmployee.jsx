@@ -24,18 +24,19 @@ const IndexEmployee = () => {
         setCurrentPage(page);
     };
 
-    const getEmployees = (page) =>{
-        setLoading(true)
-        api.get(`/employees?page=${page}&search=${searchQuery}`)
-        .then((response) =>{
-            setEmployees(response.data.employees);
-            setTotalPages(response.data.totalPages);
-            setCurrentPage(response.data.currentPage);
+    const getEmployees = async(page,searchQuery) =>{
+
+        try{
+            setLoading(true)
+            const res = await api.get(`/employees?page=${page}&search=${searchQuery}`)
+            setEmployees(res.data.employees);
+            setTotalPages(res.data.totalPages);
+            setCurrentPage(res.data.currentPage);
             setLoading(false)
-        })
-        .catch((error) =>{
+        }catch(error){
             console.log(error)
-        })
+        }
+
     }
 
     useEffect(()=>{ 
@@ -56,17 +57,15 @@ const IndexEmployee = () => {
         SetShowDeleteModal(true)
     }
 
-    const handleConfirmDelete = () =>{
-        api.delete(`/employees/${removedEmployee._id}`)
-        .then(() =>{
+    const handleConfirmDelete = async () =>{
+        try{
+            await api.delete(`/employees/${removedEmployee._id}`)
             SetShowDeleteModal(false)
-            getEmployees(currentPage)
-            
-        })
-        .catch((error) =>{
+            getEmployees(currentPage,searchQuery)
+        }catch(error){
             SetShowDeleteModal(false)
             console.log(error)
-        })
+        }
     }
 
 

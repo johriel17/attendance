@@ -23,18 +23,22 @@ const IndexDtr = () => {
         setCurrentPage(page);
     };
 
-    const getDtrs = (page, searchQuery) => {
+    const getDtrs = async (page, searchQuery) => {
+        try {
         setLoading(true);
-        api.get(`/dtrs?page=${page}&search=${searchQuery}`)
-          .then((response) => {
-            setDtrs(response.data.dtrs);
-            setTotalPages(response.data.totalPages);
-            setCurrentPage(response.data.currentPage);
-            setLoading(false);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        
+        const res = await api.get(`/dtrs?page=${page}&search=${searchQuery}`);
+        
+        setDtrs(res.data.dtrs);
+        setTotalPages(res.data.totalPages);
+        setCurrentPage(res.data.currentPage);
+        
+        setLoading(false);
+        } catch (error) {
+        setLoading(false);
+        console.log(error);
+        }
+          
       };
 
     useEffect(()=>{ 
@@ -57,17 +61,15 @@ const IndexDtr = () => {
         SetShowDeleteModal(true)
     }
 
-    const handleConfirmDelete = () =>{
-        api.delete(`/dtrs/${removedDtr._id}`)
-        .then(() =>{
+    const handleConfirmDelete = async() =>{
+        try{
+            await api.delete(`/dtrs/${removedDtr._id}`)
             SetShowDeleteModal(false)
             getDtrs(currentPage, searchQuery)
-            
-        })
-        .catch((error) =>{
+        }catch(error){
             SetShowDeleteModal(false)
             console.log(error)
-        })
+        }
     }
 
 

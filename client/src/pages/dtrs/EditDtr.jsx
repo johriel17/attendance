@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
-import Spinner from '../../components/Spinner';
+// import Spinner from '../../components/Spinner';
 import BackButton from '../../components/BackButton';
 import ApiClient from '../../components/Api';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -17,43 +17,35 @@ const EditDtr = () => {
   const {id} = useParams()
 
   useEffect(() =>{
-    setLoading(true)
-    
-    api.get(`/dtrs/${id}`)
-    .then((res) =>{
-      setDtrNum(res.data.dtrNum)
-      setStartDate(res.data.startDate)
-      setEndDate(res.data.endDate)
-      setLoading(false)
-    })
-    .catch((error) => {
-      console.log(error)
-      setLoading(false)
-    })
-
+    const fetchData = async () => {
+      try {
+        const res = await api.get(`/dtrs/${id}`);
+        setDtrNum(res.data.dtrNum);
+        setStartDate(res.data.startDate);
+        setEndDate(res.data.endDate);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  
+    fetchData();
 
   }, [])
 
-  const handleUpdateDtr = () => {
+  const handleUpdateDtr = async () => {
     const data = {
       dtrNum,
       startDate,
       endDate,
+    };
+  
+    try {
+      await api.put(`/dtrs/${id}`, data);
+      navigate('/dtrs');
+    } catch (error) {
+      setErrors(error.response.data.errors);
     }
-
-    setLoading(true)
-
-    api.put(`/dtrs/${id}`, data)
-    .then(() =>{
-      setLoading(false)
-      navigate('/dtrs')
-    })
-    .catch((error) => {
-      setLoading(false)
-      setErrors(error.response.data.errors)
-    })
-
-  }
+  };
   
   return (
     <div className="px-10 bg-slate-200 rounded-lg shadow-lg my-10">
@@ -62,7 +54,7 @@ const EditDtr = () => {
           <h3 className="text-2xl my-8 font-extrabold">Edit Daily Time Record</h3>
       </div>
        
-       {loading && <Spinner/>}
+       {/* {loading && <Spinner/>} */}
           
         <form className="w-full mx-auto py-5">
           <div className="flex gap-x-5">

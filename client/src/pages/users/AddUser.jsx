@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import Spinner from "../../components/Spinner";
+// import Spinner from "../../components/Spinner";
 import BackButton from "../../components/BackButton";
 import ApiClient from "../../components/Api";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +9,7 @@ const AddUser = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [userType, setUserType] = useState("admin");
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [employees, setEmployees] = useState(null);
   const [employee, setEmployee] = useState(null)
@@ -20,19 +20,21 @@ const AddUser = () => {
   useEffect(() => {
 
     if(userType === 'employee'){
-        api
-        .get("/employees")
-        .then((response) => {
-          setEmployees(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+        const fetchEmployees = async () => {
+          try{
+            const res = await api.get("/employees")
+            setEmployees(res.data)
+          }catch(error){
+            console.log(error)
+          }
+        }
+
+        fetchEmployees()
     }
 
   }, [userType]);
 
-  const handleSaveUser = () => {
+  const handleSaveUser = async () => {
     const data = {
       username,
       password,
@@ -41,18 +43,13 @@ const AddUser = () => {
       employee,
     };
 
-    setLoading(true);
-
-    api
-      .post("/users", data)
-      .then(() => {
-        setLoading(false);
-        navigate("/users");
-      })
-      .catch((error) => {
-        setLoading(false);
-        setErrors(error.response.data.errors);
-      });
+    try{
+      await api.post("/users", data)
+      navigate("/users");
+    }catch(error){
+      setErrors(error.response.data.errors);
+    }
+    
   };
 
   return (
@@ -64,7 +61,7 @@ const AddUser = () => {
         </h3>
       </div>
 
-      {loading && <Spinner />}
+      {/* {loading && <Spinner />} */}
 
       <form className="w-full mx-auto py-5">
         <div className="flex flex-wrap">

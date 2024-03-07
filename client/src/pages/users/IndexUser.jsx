@@ -23,18 +23,17 @@ const IndexUser = () => {
         setCurrentPage(page);
     };
 
-    const getUsers = (page, searchQuery) => {
-        setLoading(true);
-        api.get(`/users?page=${page}&search=${searchQuery}`)
-          .then((response) => {
-            setUsers(response.data.users);
-            setTotalPages(response.data.totalPages);
-            setCurrentPage(response.data.currentPage);
+    const getUsers = async (page, searchQuery) => {
+          try{
+            setLoading(true);
+            const res = await api.get(`/users?page=${page}&search=${searchQuery}`)
+            setUsers(res.data.users);
+            setTotalPages(res.data.totalPages);
+            setCurrentPage(res.data.currentPage);
             setLoading(false);
-          })
-          .catch((error) => {
+          }catch(error){
             console.log(error);
-          });
+          }
       };
 
     useEffect(()=>{ 
@@ -57,17 +56,15 @@ const IndexUser = () => {
         SetShowDeleteModal(true)
     }
 
-    const handleConfirmDelete = () =>{
-        api.delete(`/users/${removedUser._id}`)
-        .then(() =>{
+    const handleConfirmDelete = async () =>{
+        try{
+            await api.delete(`/users/${removedUser._id}`)
             SetShowDeleteModal(false)
             getUsers(currentPage, searchQuery)
-            
-        })
-        .catch((error) =>{
+        }catch(error){
             SetShowDeleteModal(false)
             console.log(error)
-        })
+        }
     }
 
 

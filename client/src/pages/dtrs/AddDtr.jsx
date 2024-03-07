@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
-import Spinner from '../../components/Spinner';
+// import Spinner from '../../components/Spinner';
 import BackButton from '../../components/BackButton';
 import ApiClient from '../../components/Api';
 import { useNavigate } from 'react-router-dom';
@@ -14,24 +14,19 @@ const AddDtr = () => {
   const navigate = useNavigate()
   const api = ApiClient()
 
-  const handleSaveDtr = () => {
+  const handleSaveDtr = async () => {
     const data = {
       dtrNum,
       startDate,
       endDate,
     }
 
-    setLoading(true)
-
-    api.post('/dtrs', data)
-    .then(() =>{
-      setLoading(false)
+    try{
+      await api.post('/dtrs', data)
       navigate('/dtrs')
-    })
-    .catch((error) => {
-      setLoading(false)
+    }catch(error){
       setErrors(error.response.data.errors)
-    })
+    }
 
   }
   
@@ -42,7 +37,7 @@ const AddDtr = () => {
           <h3 className="text-2xl my-8 font-extrabold">Add New Daily Time Record</h3>
       </div>
        
-       {loading && <Spinner/>}
+       {/* {loading && <Spinner/>} */}
           
         <form className="w-full mx-auto py-5">
           <div className="flex gap-x-5">

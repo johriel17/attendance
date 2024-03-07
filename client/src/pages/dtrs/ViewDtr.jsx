@@ -13,16 +13,19 @@ const ViewDtr = () => {
 
   useEffect(() => {
 
-    setLoading(true)
-    api.get(`/dtrs/${id}`)
-    .then((response) => {
-      setDtr(response.data)
-      setLoading(false)
-    })
-    .catch((error) => {
-      setLoading(false)
-      console.log(error)
-    })
+    const fetchData = async () => {
+      try{
+        setLoading(true)
+        const res = await api.get(`/dtrs/${id}`)
+        setDtr(res.data)
+        setLoading(false)
+      }catch(error){
+        setLoading(false)
+        console.log(error)
+      }
+    }
+
+    fetchData()
 
   }, [])
 
