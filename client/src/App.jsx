@@ -19,6 +19,12 @@ import AddUser from './pages/users/AddUser'
 // import EditUser from './pages/users/EditUser'
 // import ViewUser from './pages/users/ViewUser'
 
+//departments pages
+import IndexDepartment from './pages/departments/IndexDepartment'
+import AddDepartment from './pages/departments/AddDepartment'
+import EditDepartment from './pages/departments/EditDepartment'
+import ViewDepartment from './pages/departments/ViewDepartment'
+
 function App() {
   // const [loggedIn, setLoggedIn] = useState(false)
   const {user} = useAuthContext()
@@ -51,6 +57,12 @@ function App() {
             <Route path='/users/add' element={user? <AddUser /> : <Navigate to='/login' />} />
             {/* <Route path='/users/edit/:id' element={user? <EditEmployee /> : <Navigate to='/login' />} />
             <Route path='/users/view/:id' element={user? <ViewEmployee /> : <Navigate to='/login' />} /> */}
+
+            {/* employee routes */}
+            <Route path='/departments' element={user? <IndexDepartment /> : <Navigate to='/login' />} />
+            <Route path='/departments/add' element={user? <AddDepartment /> : <Navigate to='/login' />} />
+            <Route path='/departments/edit/:id' element={user? <EditDepartment /> : <Navigate to='/login' />} />
+            <Route path='/departments/view/:id' element={user? <ViewDepartment /> : <Navigate to='/login' />} />
             
 
           </Routes>

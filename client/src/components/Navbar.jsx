@@ -56,6 +56,9 @@ const Navbar = () => {
                 <Link to="/employees" onClick={()=>setIsMenuOpen(false)} className={`block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:underline md:p-0 underline-offset-8 decoration-double decoration-amber-700 ${activeLink.startsWith('/employees') && 'underline'}`}>Employees</Link>
               </li>
               <li>
+                <Link to="/departments" onClick={()=>setIsMenuOpen(false)} className={`block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:underline md:p-0 underline-offset-8 decoration-double decoration-amber-700 ${activeLink.startsWith('/departments') && 'underline'}`}>Departments</Link>
+              </li>
+              <li>
                 <Link to="/users" onClick={()=>setIsMenuOpen(false)} className={`block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:underline md:p-0 underline-offset-8 decoration-double decoration-amber-700 ${activeLink.startsWith('/users') && 'underline'}`}>Users</Link>
               </li>
               {/* <li>

@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import "react-datepicker/dist/react-datepicker.css";
-// import Spinner from '../../components/Spinner';
 import BackButton from '../../components/BackButton';
 import ApiClient from '../../components/Api';
 import { useNavigate } from 'react-router-dom';
@@ -9,10 +8,28 @@ const AddEmployee = () => {
   const [firstName, setFirstName] = useState('')
   const [middleName, setMiddleName] = useState('')
   const [lastName, setLastName] = useState('')
-  // const [loading, setLoading] = useState(false)
+  const [departments, setDepartments] = useState(null)
+  const [department, setDepartment] = useState(null)
   const [errors, setErrors] = useState({});
   const navigate = useNavigate()
   const api = ApiClient()
+
+
+  useEffect(() => {
+
+    const fetchDepartments = async () => {
+      try{
+        const res = await api.get("/departments")
+        setDepartment(res.data[0])
+        setDepartments(res.data)
+      }catch(error){
+        console.log(error)
+      }
+    }
+
+    fetchDepartments()
+    
+  }, []);
 
   const handleSaveEmployee = async() => {
     const data = {
@@ -20,6 +37,7 @@ const AddEmployee = () => {
       firstName,
       middleName,
       lastName,
+      department,
     }
 
     try{
@@ -37,9 +55,7 @@ const AddEmployee = () => {
       <div className="flex justify-center items-center">
           <h3 className="text-2xl my-8 font-extrabold">Add New Employee</h3>
       </div>
-       
-       {/* {loading && <Spinner/>} */}
-          
+               
         <form className="w-full mx-auto py-5">
           <div className="flex flex-wrap">
             <div className="w-full md:w-1/2 mb-5">
@@ -62,6 +78,26 @@ const AddEmployee = () => {
                 <input type="text" onChange={(e) => {setLastName(e.target.value)}} id="lname" className={`bg-gray-50 border  text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full md:w-11/12 p-2.5 ${errors.lastName ? 'border-red-400' : 'border-gray-300'}`}/>
                 {errors.lastName && <div className="text-red-600">{errors.lastName}</div>}
             </div>
+            <div className="w-full md:w-1/2 mb-5">
+                <label
+                htmlFor="emp"
+                className="block mb-2 text-sm font-medium text-gray-900">
+                Department
+                </label>
+                <select
+                id="emp"
+                onChange={(e) => setDepartment(e.target.value)}
+                className="bg-gray-50 border border-gray-300 text-gray-900 mb-6 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full md:w-11/12 p-2.5 ">
+                {departments?.map((department,index) => (
+                    <option key={department._id} value={department._id}>{department.name}</option>
+                ))
+
+                }
+                </select>
+                {errors.userType && (
+                <div className="text-red-600">{errors.department}</div>
+                )}
+                </div>
           </div>
           <div className="flex justify-end items-center">
           <button type="button" onClick={handleSaveEmployee} className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 self-end">Save</button>

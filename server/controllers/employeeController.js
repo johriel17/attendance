@@ -31,6 +31,7 @@ export const getEmployees = async (req, res) => {
         const totalPages = Math.ceil(totalEmployees / limit);
 
         const employees = await Employee.find(query)
+          .populate('department')
           .sort({ lastName: 1 })
           .skip(skip)
           .limit(limit);
@@ -56,7 +57,7 @@ export const getEmployees = async (req, res) => {
 export const getEmployee = async (req,res) => {
     try{
         const { id } = req.params
-        const employee = await Employee.findById(id)
+        const employee = await Employee.findById(id).populate('department')
         return res.status(200).json(employee)
     }catch(error){
         console.log(error.message)
@@ -66,7 +67,7 @@ export const getEmployee = async (req,res) => {
 
 export const createEmployee = async (req, res) => {
     try {
-      const { employeeNo, firstName, middleName, lastName } = req.body;
+      const { employeeNo, firstName, middleName, lastName, department } = req.body;
       const errors = {};
   
       if (!employeeNo) {
@@ -75,11 +76,11 @@ export const createEmployee = async (req, res) => {
       if (!firstName) {
         errors.firstName = 'First Name is required';
       }
-    //   if (!middleName) {
-    //     errors.middleName = 'Middle Name is required';
-    //   }
       if (!lastName) {
         errors.lastName = 'Last Name is required';
+      }
+      if (!department) {
+        errors.department = 'Department is required';
       }
   
       if (Object.keys(errors).length > 0) {
@@ -91,6 +92,7 @@ export const createEmployee = async (req, res) => {
         firstName,
         middleName,
         lastName,
+        department,
       };
   
 
@@ -106,7 +108,7 @@ export const createEmployee = async (req, res) => {
 
 export const updateEmployee = async (req,res) => {
     try{
-        const { employeeNo, firstName, middleName, lastName } = req.body;
+        const { employeeNo, firstName, middleName, lastName, department } = req.body;
         const errors = {};
     
         if (!employeeNo) {
@@ -115,11 +117,11 @@ export const updateEmployee = async (req,res) => {
         if (!firstName) {
           errors.firstName = 'First Name is required';
         }
-        // if (!middleName) {
-        //   errors.middleName = 'Middle Name is required';
-        // }
         if (!lastName) {
           errors.lastName = 'Last Name is required';
+        }
+        if (!department) {
+          errors.department = 'Department is required';
         }
     
         if (Object.keys(errors).length > 0) {

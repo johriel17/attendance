@@ -14,6 +14,7 @@ const MONGO_URI = process.env.MONGO_URI;
 import dtrsRoute from './routes/dtrsRoute.js'
 import usersRoute from './routes/userRoute.js'
 import employeesRoute from './routes/employeeRoute.js'
+import departmentRoute from './routes/departmentRoute.js'
 
 const app = express()
 
@@ -22,6 +23,7 @@ app.use(cors())
 app.use('/api/dtrs', dtrsRoute)
 app.use('/api/users', usersRoute)
 app.use('/api/employees', employeesRoute)
+app.use('/api/departments', departmentRoute)
 
 
 mongoose

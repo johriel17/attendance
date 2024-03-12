@@ -57,7 +57,7 @@ const AddUser = () => {
       <BackButton destination={"/users"} />
       <div className="flex justify-center items-center">
         <h3 className="text-2xl my-8 font-extrabold">
-          Add New Daily Time Record
+          Add New User
         </h3>
       </div>
 

@@ -17,6 +17,11 @@ const employeeSchema = mongoose.Schema({
         type : String,
         required : true
     },
+    department: {
+        type : mongoose.Schema.Types.ObjectId,
+        require : true,
+        ref : 'Department'
+    }
 },
     {
         timestamps: true

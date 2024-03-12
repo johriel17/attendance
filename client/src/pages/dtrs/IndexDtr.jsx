@@ -103,7 +103,7 @@ const IndexDtr = () => {
                     {dtrs.map((dtr, index) =>(
                         <tr key={dtr._id} className='h-8'>
                             <td className='border border-slate-700 rounded-md text-center hidden md:table-cell'>
-                                {index + 1}
+                                {(currentPage - 1) * 10 + index + 1}
                             </td>
                             <td className='border border-slate-700 rounded-md text-center'>
                                 {dtr.dtrNum}

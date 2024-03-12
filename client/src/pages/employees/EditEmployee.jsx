@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import "react-datepicker/dist/react-datepicker.css";
-// import Spinner from '../../components/Spinner';
 import BackButton from '../../components/BackButton';
 import ApiClient from '../../components/Api';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -9,13 +8,23 @@ const EditEmployee = () => {
   const [firstName, setFirstName] = useState('')
   const [middleName, setMiddleName] = useState('')
   const [lastName, setLastName] = useState('')
-  // const [loading, setLoading] = useState(false)
+  const [departments, setDepartments] = useState(null)
+  const [department, setDepartment] = useState('')
   const [errors, setErrors] = useState({});
   const navigate = useNavigate()
   const {id} = useParams()
   const api = ApiClient()
 
   useEffect(() => {
+
+    const fetchDepartments = async () => {
+      try{
+        const res = await api.get("/departments")
+        setDepartments(res.data)
+      }catch(error){
+        console.log(error)
+      }
+    }
 
     const fetchData = async () => {
       try{
@@ -24,13 +33,17 @@ const EditEmployee = () => {
         setFirstName(res.data.firstName)
         setMiddleName(res.data.middleName)
         setLastName(res.data.lastName)
+        setDepartment(res.data.department ? res.data.department._id : '')
       }catch(error){
         console.log(error)
       }
       
     }
 
+    
+    fetchDepartments()
     fetchData()
+    
   },[])
 
   const handleUpdateEmployee = async() => {
@@ -39,6 +52,7 @@ const EditEmployee = () => {
       firstName,
       middleName,
       lastName,
+      department,
     }
 
     try{
@@ -81,6 +95,27 @@ const EditEmployee = () => {
                 <input type="text" value={lastName} onChange={(e) => {setLastName(e.target.value)}} id="lname" className={`bg-gray-50 border  text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full md:w-11/12 p-2.5 ${errors.lastName ? 'border-red-400' : 'border-gray-300'}`}/>
                 {errors.lastName && <div className="text-red-600">{errors.lastName}</div>}
             </div>
+            <div className="w-full md:w-1/2 mb-5">
+                <label
+                htmlFor="emp"
+                className="block mb-2 text-sm font-medium text-gray-900">
+                Department
+                </label>
+                <select
+                id="emp"
+                onChange={(e) => setDepartment(e.target.value)}
+                value={department}
+                className="bg-gray-50 border border-gray-300 text-gray-900 mb-6 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full md:w-11/12 p-2.5 ">
+                {departments?.map((department) => (
+                    <option key={department._id} value={department._id}>{department.name}</option>
+                ))
+
+                }
+                </select>
+                {errors.userType && (
+                <div className="text-red-600">{errors.department}</div>
+                )}
+                </div>
           </div>
           <div className="flex justify-end items-center">
           <button type="button" onClick={handleUpdateEmployee} className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 self-end">Update</button>
