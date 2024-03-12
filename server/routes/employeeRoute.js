@@ -1,10 +1,11 @@
 import express from 'express'
 import { getEmployees, getEmployee, createEmployee, updateEmployee, deleteEmplooyee } from "../controllers/employeeController.js";
-import { protect } from "../middleware/authMiddleware.js"
+import { protect, adminOnly } from "../middleware/authMiddleware.js"
 
 const router = express.Router()
 
 router.use(protect)
+router.use(adminOnly)
 
 router.get('/', getEmployees)
 

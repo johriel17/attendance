@@ -1,23 +1,29 @@
 import  express  from "express"
-import { getDtrs, getDtr, createDtr, updateDtr, deleteDtr, getDtrEmployeeSubs, updateEmployeeSub } from "../controllers/dtrController.js"
-import { protect } from "../middleware/authMiddleware.js"
+import { getDtrs, getDtr, createDtr, updateDtr, deleteDtr, getDtrEmployeeSubs, updateEmployeeSub, attendance, timeIn, timeOut } from "../controllers/dtrController.js"
+import { protect, adminOnly } from "../middleware/authMiddleware.js"
 
 const router = express.Router()
 
 router.use(protect)
 
-router.get('/', getDtrs)
+router.get('/', adminOnly, getDtrs)
 
-router.get('/:id', getDtr)
+router.get('/:id', adminOnly, getDtr)
 
-router.post('/', createDtr)
+router.post('/', adminOnly, createDtr)
 
-router.put('/:id', updateDtr)
+router.put('/:id', adminOnly, updateDtr)
 
-router.delete('/:id', deleteDtr)
+router.delete('/:id', adminOnly, deleteDtr)
 
 router.get('/dtr-employee-subs/:dtrEmployeeId', getDtrEmployeeSubs)
 
 router.post('/save-attendance/:attendanceId', updateEmployeeSub)
+
+router.get('/attendance/:employeeId/:employeeDepartment', attendance)
+
+router.put('/time-in/:employeeId/:employeeDepartment', timeIn)
+
+router.put('/time-out/:employeeId/:employeeDepartment', timeOut)
 
 export default router

@@ -3,6 +3,7 @@ import Employee from '../models/employeeModel.js'
 import DtrEmployee from "../models/dtrEmployeeModel.js";
 import DtrEmployeeSub from "../models/dtrEmployeeSubModel.js";
 import mongoose from 'mongoose';
+import { convertTimeFormat } from "../util/mainUtil.js";
 // import { parseISO } from 'date-fns'; 
 
 // export const getDtrs = async (req,res) =>{
@@ -86,9 +87,27 @@ export const createDtr = async (req, res) => {
       if (!department) {
         errors.department = 'Department is required';
       }
+      if (endDate <= startDate) {
+        errors.endDate = 'Invalid range for end date';
+      }
   
       if (Object.keys(errors).length > 0) {
         return res.status(400).json({ errors });
+      }
+
+      const existingDtrs = await Dtr.find({
+        department,
+        $or: [
+            { startDate: { $lte: endDate }, endDate: { $gte: startDate } },
+            { startDate: { $gte: startDate, $lte: endDate } },
+            { endDate: { $gte: startDate, $lte: endDate } }
+        ]
+      });
+
+      if (existingDtrs.length > 0) {
+          errors.startDate = 'The date overlaps with existing dtr';
+          errors.endDate = 'The date overlaps with existing dtr';
+          return res.status(400).json({ errors });
       }
 
       const employees = await Employee.find({ department });
@@ -254,4 +273,137 @@ export const updateEmployeeSub = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+export const attendance = async (req,res) => {
+  const {employeeId, employeeDepartment} = req.params
+
+  try{
+    const currentDate = new Date();
+    const department = new mongoose.Types.ObjectId(employeeDepartment);
+
+    const dtr = await Dtr.findOne({
+      startDate: { $lt: currentDate },
+      endDate: { $gt: currentDate },
+      department 
+    });
+
+    const dtrEmployee = await DtrEmployee.findOne({employee : employeeId, dtr : dtr._id})
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0); // Set time to start of the day (midnight)
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999); // Set time to end of the day (just before midnight)
+
+    const dtrEmployeeSubs = await DtrEmployeeSub.findOne({
+      date: {
+        $gte: startOfDay,
+        $lte: endOfDay
+      },
+      dtrEmployee : dtrEmployee._id
+    }
+    );
+
+    return res.status(200).json({
+      dtrEmployeeSubs
+    })
+    
+
+  } catch(error){
+    console.log(error)
+    return res.status(500).json({error : error})
+  }
+
+
+}
+
+export const timeIn = async (req,res) => {
+
+  const {employeeId, employeeDepartment} = req.params
+  const {timeIn} = req.body
+  
+  try{
+    const currentDate = new Date();
+    const department = new mongoose.Types.ObjectId(employeeDepartment);
+
+    const dtr = await Dtr.findOne({
+      startDate: { $lt: currentDate },
+      endDate: { $gt: currentDate },
+      department 
+    });
+
+    const dtrEmployee = await DtrEmployee.findOne({employee : employeeId, dtr : dtr._id})
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0); // Set time to start of the day (midnight)
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999); // Set time to end of the day (just before midnight)
+
+    const dtrEmployeeSubs = await DtrEmployeeSub.findOneAndUpdate({
+      date: {
+        $gte: startOfDay,
+        $lte: endOfDay
+      },
+      dtrEmployee : dtrEmployee._id
+    },{
+      timeIn : convertTimeFormat(timeIn)
+    },
+    {new : true}
+    );
+
+    return res.status(200).json({
+      dtr,
+      dtrEmployee,
+      dtrEmployeeSubs
+    })
+    
+
+  } catch(error){
+    console.log(error)
+    return res.status(500).json({error : error})
+  }
+}
+
+export const timeOut = async (req,res) => {
+
+  const {employeeId, employeeDepartment} = req.params
+  const {timeOut} = req.body
+  
+  try{
+    const currentDate = new Date();
+    const department = new mongoose.Types.ObjectId(employeeDepartment);
+
+    const dtr = await Dtr.findOne({
+      startDate: { $lt: currentDate },
+      endDate: { $gt: currentDate },
+      department 
+    });
+
+    const dtrEmployee = await DtrEmployee.findOne({employee : employeeId, dtr : dtr._id})
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0); // Set time to start of the day (midnight)
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999); // Set time to end of the day (just before midnight)
+
+    const dtrEmployeeSubs = await DtrEmployeeSub.findOneAndUpdate({
+      date: {
+        $gte: startOfDay,
+        $lte: endOfDay
+      },
+      dtrEmployee : dtrEmployee._id
+    },{
+      timeOut : convertTimeFormat(timeOut)
+    },
+    {new : true}
+    );
+
+    return res.status(200).json({
+      dtr,
+      dtrEmployee,
+      dtrEmployeeSubs
+    })
+    
+
+  } catch(error){
+    console.log(error)
+    return res.status(500).json({error : error})
+  }
+}
 

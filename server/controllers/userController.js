@@ -20,7 +20,8 @@ export const login = async (req,res) => {
           return res.status(400).json({ errors });
         }
 
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email })
+        .populate('employee')
 
         if(!user){
             return res.status(400).json({errors : {email : "There is no such an email"}})
@@ -34,7 +35,8 @@ export const login = async (req,res) => {
             _id : user.id,
             username: user.username,
             email : user.email,
-            token : generateToken(user.id)
+            employee : user.employee,
+            token : generateToken(user.id,user.userType)
         })
 
     }catch(error){
@@ -210,9 +212,9 @@ export const deleteUser = async (req,res) =>{
     }
 }
 
-const generateToken = (id) =>{
+const generateToken = (_id,userType) =>{
 
-    return jwt.sign({id}, process.env.JWT_SECRET, {
+    return jwt.sign({_id,userType}, process.env.JWT_SECRET, {
         expiresIn : "12h"
     })
 

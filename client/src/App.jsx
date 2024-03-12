@@ -1,6 +1,8 @@
 import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom'
 import  Home  from './pages/Home'
+import HomeEmployee from './pages/HomeEmployee'
 import Navbar from './components/Navbar'
+import NavbarEmployee from './components/NavbarEmployee'
 import Login from './pages/auth/Login'
 import { useAuthContext } from './hooks/useAuthContext'
 //dtr pages
@@ -25,6 +27,10 @@ import AddDepartment from './pages/departments/AddDepartment'
 import EditDepartment from './pages/departments/EditDepartment'
 import ViewDepartment from './pages/departments/ViewDepartment'
 
+//employee attendance pages
+import IndexEmployeeAttendance from './pages/employeeAttendance/Index'
+import ViewEmployeeAttendance from './pages/employeeAttendance/View'
+
 function App() {
   // const [loggedIn, setLoggedIn] = useState(false)
   const {user} = useAuthContext()
@@ -32,12 +38,19 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        {user && <Navbar />}
+        {user && user.employee ? <NavbarEmployee /> : user && <Navbar />}
         <div className="pages max-w-screen-xl mx-auto">
           <Routes>
 
             {/* <Route path="/" element={loggedIn ? <Navigate to="/home" /> : <Login setLoggedIn={setLoggedIn} />} /> */}
-            <Route path='/' element={user? <Home /> : <Navigate to='/login' />} />
+            <Route
+              path='/'
+              element={
+                user && user.employee ? <HomeEmployee /> : user ? <Home /> : <Navigate to='/login' />
+              }
+            />
+
+
             <Route path="/login" element={!user? <Login /> : <Navigate to='/' />} />
 
             {/* dtr routes */}
@@ -63,6 +76,12 @@ function App() {
             <Route path='/departments/add' element={user? <AddDepartment /> : <Navigate to='/login' />} />
             <Route path='/departments/edit/:id' element={user? <EditDepartment /> : <Navigate to='/login' />} />
             <Route path='/departments/view/:id' element={user? <ViewDepartment /> : <Navigate to='/login' />} />
+
+            {/* employee routes */}
+            <Route path='/attendances' element={user? <IndexEmployeeAttendance /> : <Navigate to='/login' />} />
+            <Route path='/attendances/view/:id' element={user? <ViewEmployeeAttendance /> : <Navigate to='/login' />} />
+            {/* <Route path='/departments/edit/:id' element={user? <EditDepartment /> : <Navigate to='/login' />} />
+            <Route path='/departments/view/:id' element={user? <ViewDepartment /> : <Navigate to='/login' />} /> */}
             
 
           </Routes>

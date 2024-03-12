@@ -1,10 +1,11 @@
 import  express  from "express"
 import { getDepartments, getDepartment, createDepartment, updateDepartment, deleteDepartment } from "../controllers/departmentController.js"
-import { protect } from "../middleware/authMiddleware.js"
+import { protect, adminOnly } from "../middleware/authMiddleware.js"
 
 const router = express.Router()
 
 router.use(protect)
+router.use(adminOnly)
 
 router.get('/', getDepartments)
 

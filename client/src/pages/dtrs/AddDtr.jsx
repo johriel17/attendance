@@ -41,9 +41,12 @@ const AddDtr = () => {
     }
 
     try{
+      setLoading(true)
       await api.post('/dtrs', data)
+      setLoading(false)
       navigate('/dtrs')
     }catch(error){
+      setLoading(false)
       setErrors(error.response.data.errors)
     }
 
@@ -97,7 +100,16 @@ const AddDtr = () => {
             </div>
           </div>
           <div className="flex justify-end items-center">
-          <button type="button" onClick={handleSaveDtr} className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 self-end">Save</button>
+            {loading &&
+            <div className='flex mr-5'>
+            <svg className="animate-spin h-5 w-5 mr-1 text-amber-400" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A8.005 8.005 0 014 12H0c0 6.627 5.373 12 12 12v-4c-2.155 0-4.163-.614-5.873-1.709l-1.464 2.535zM12 20c1.91 0 3.68-.684 5.058-1.826l-1.464-2.535A7.969 7.969 0 0112 20zm5.291-2A8.005 8.005 0 0120 12h-4c0 2.155.614 4.163 1.709 5.873l2.535-1.464zM20 12c0-1.91-.684-3.68-1.826-5.058l-2.535 1.464c1.095 1.71 1.709 3.718 1.709 5.873h4z"></path>
+            </svg> 
+            Processing...
+            </div>
+            }
+            <button type="button" onClick={handleSaveDtr} disabled={loading} className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 self-end">Save</button>
           </div>
         </form>
 

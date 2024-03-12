@@ -24,6 +24,7 @@ const AddUser = () => {
           try{
             const res = await api.get("/employees")
             setEmployees(res.data)
+            setEmployee(res.data[0]._id)
           }catch(error){
             console.log(error)
           }
