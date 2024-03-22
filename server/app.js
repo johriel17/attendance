@@ -16,6 +16,7 @@ import usersRoute from './routes/userRoute.js'
 import employeesRoute from './routes/employeeRoute.js'
 import departmentRoute from './routes/departmentRoute.js'
 import employeeAttendanceRoute from './routes/employeeAttendanceRoute.js'
+import pdfRoute from './routes/pdfRoute.js'
 
 const app = express()
 
@@ -26,6 +27,7 @@ app.use('/api/users', usersRoute)
 app.use('/api/employees', employeesRoute)
 app.use('/api/departments', departmentRoute)
 app.use('/api/employee-attendances', employeeAttendanceRoute)
+app.use('/api/pdfs', pdfRoute)
 
 
 mongoose

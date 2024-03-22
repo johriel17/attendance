@@ -5,6 +5,7 @@ import BackButton from '../../components/BackButton'
 import Spinner from '../../components/Spinner'
 import { BsInfoCircle } from 'react-icons/bs'
 import AttendanceModal from '../../components/AttendanceModal'
+import { FaFilePdf } from "react-icons/fa6";
 
 const ViewDtr = () => {
 
@@ -34,6 +35,22 @@ const ViewDtr = () => {
     fetchData()
 
   }, [])
+
+  const downloadPDF = async () => {
+      try {
+          const response = await api.get(`pdfs/attendances/${id}`, {
+              responseType: 'blob', // Important: response type must be blob
+          });
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'attendances.pdf');
+          document.body.appendChild(link);
+          link.click();
+      } catch (error) {
+          console.error('Error downloading PDF:', error);
+      }
+  }
 
   return (
     <div className="px-10 bg-slate-200 rounded-lg shadow-lg my-10">
@@ -65,7 +82,9 @@ const ViewDtr = () => {
             <span className='text-xl mr-4 font-bold'>Department</span>
             {dtr.department && <span className='font-semibold'>{dtr.department.name}</span>}
           </div>
-
+          <div className='flex w-full justify-end px-2'>
+            <button onClick={downloadPDF}><FaFilePdf color='#FFBF00' size={30} /></button>
+          </div>
           <table className='w-full border-separate border-spacing-2 py-5'>
                 <thead>
                     <tr>
